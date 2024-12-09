@@ -1,0 +1,1 @@
+export const formatComment = number => Number(number?.toFixed(1)).toLocaleString();

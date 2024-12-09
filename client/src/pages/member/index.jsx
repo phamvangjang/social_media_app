@@ -1,0 +1,8 @@
+export { default as Home } from './Home'
+export { default as DirectInbox } from './DirectInbox'
+export { default as Explore } from './Explore'
+export { default as MemberLayout } from './MemberLayout'
+export { default as Profile } from './Profile'
+export { default as Reels } from './Reels'
+export { default as Post } from './Post'
+export { default as DetailPost } from '../../components/DetailPost'
