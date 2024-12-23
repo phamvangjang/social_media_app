@@ -6,4 +6,5 @@ router.post('/childPost', ctrls.insertChildPost)
 router.post('/replie', ctrls.insertReplie)
 router.post('/comment', ctrls.insertComment)
 router.post('/post', ctrls.insertPost)
+router.post('/', ctrls.insert)
 module.exports = router;

@@ -26,6 +26,10 @@ const createUser = asyncHandler(async (req, res) => {
 
 const statusFollow = asyncHandler(async (req, res) => {
     const { id, fid } = req.query;
+    if (!fid) {
+        if (!user) return res.status(404).json({ mes: 'fid not found' });
+
+    }
     try {
         // console.log(id, fid);
         const user = await User.findById(id);

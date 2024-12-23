@@ -1,4 +1,4 @@
-import { apiGetCurrentUser, apiGetFollower, apiGetFollowing } from "@/apis";
+import { apiGetFollower, apiGetFollowing } from "@/apis";
 import { Likes, ModelFollower, ModelFollowing, Share } from "@/components";
 import {
   Dialog,
@@ -7,79 +7,64 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { login } from "@/store/user/userSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-const Profile = () => {
- 
-  const { id } = useParams(); // Lấy id từ URL
-    console.log(id);
-    const [countFollower, setcountFollower] = useState(null);
-    const [countFollowing, setcountFollowing] = useState(null);
-    const [arrayFollower, setArrayFollower] = useState([]);
-    const [arrayFollowing, setArrayFollowing] = useState([]);
-    const [user, setUser] = useState([]);
-    const dispatch = useDispatch();
-     // Fetch current user info
-      useEffect(() => {
-        if (id) {
-          apiGetCurrentUser(id)
-            .then((response) => {
-              setUser(response.data);
-            })
-            .catch((error) => {
-              console.error("Error fetching user:", error);
-            });
-        }
-      }, [id, dispatch]);
-      const currentUser = useSelector(state => state.user.current);
-      if (!currentUser) {
-        return <div>Loading...</div>;
+const MyProfile = () => {
+  const currentUser = useSelector(state => state.user.current);
+  if (!currentUser) {
+    return <div>Loading...</div>;
+  }
+const { id } = useParams(); // Lấy id từ URL
+
+  const [countFollower, setcountFollower] = useState(null);
+  const [countFollowing, setcountFollowing] = useState(null);
+  const [arrayFollower, setArrayFollower] = useState([]);
+  const [arrayFollowing, setArrayFollowing] = useState([]);
+  useEffect(
+    () => {
+      if (id) {
+        apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
+        .then(response => {
+          if (response.status === 'success') {
+              setcountFollower(response.count); // Cập nhật countFollower
+              setArrayFollower(response.data);
+            }
+      })
+          .catch(error => console.error("Error fetching user:", error));
       }
-    // useEffect(
-    //   () => {
-    //     if (id) {
-    //       apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
-    //       .then(response => {
-    //         if (response.status === 'success') {
-    //             setcountFollower(response.count); // Cập nhật countFollower
-    //             setArrayFollower(response.data);
-    //           }
-    //     })
-    //         .catch(error => console.error("Error fetching user:", error));
-    //     }
-    //   },
-    //   [id]
-    // );
+    },
+    [id]
+  );
+
+  useEffect(
+    () => {
+      if (id) {
+        apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
+        .then(response => {
+          if (response.status === 'success') {
+              setcountFollowing(response.count); // Cập nhật countFollower
+              setArrayFollowing(response.data);
+            }
+      })
+          .catch(error => console.error("Error fetching user:", error));
+      }
+    },
+    [id]
+  );
+
   
-    // useEffect(
-    //   () => {
-    //     if (id) {
-    //       apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
-    //       .then(response => {
-    //         if (response.status === 'success') {
-    //             setcountFollowing(response.count); // Cập nhật countFollower
-    //             setArrayFollowing(response.data);
-    //           }
-    //     })
-    //         .catch(error => console.error("Error fetching user:", error));
-    //     }
-    //   },
-    //   [id]
-    // );
-  
-    console.log(user);
-    
-  
-    console.log(currentUser.avatar);
+
+  console.log(currentUser.avatar);
+  // Gọi API để lấy thông tin user
+
   return (
     <div class="max-w-4xl mx-auto p-4">
       <div class="flex items-center space-x-4">
         <div class="relative">
           <img
-            src={user?.avatar||"https://placehold.co/150x150"} 
+            src={currentUser?.avatar||"https://placehold.co/150x150"} 
             alt="Profile"
             class="w-36 h-36 rounded-full border-4 border-white"
           />
@@ -87,13 +72,15 @@ const Profile = () => {
         </div>
         <div class="flex-1 gap-3 flex flex-col items-start">
           <div class="flex items-center space-x-2">
-            <h2 class="text-2xl font-bold">{user.username}</h2>
+            <h2 class="text-2xl font-bold">
+              {currentUser.username}
+            </h2>
             <i class="fas fa-check-circle text-blue-500" />
             <button class="ml-4 px-4 py-1 border rounded font-medium bg-[#DBDBDB]">
-              Đang theo dõi
+              Edit profile
             </button>
             <button class="ml-2 px-4 py-1 border rounded font-medium bg-[#DBDBDB]">
-              Nhắn tin
+              View archive
             </button>
             <i class="fas fa-ellipsis-h ml-2" />
           </div>
@@ -107,7 +94,7 @@ const Profile = () => {
             <Dialog>
               <DialogTrigger asChild>
                 <div class="ml-4 flex items-center gap-1 cursor-pointer">
-                  <span className="font-bold">85,9 Tr</span>
+                  <span className="font-bold">{countFollower || 0}</span>
                   <span>người theo dõi</span>
                 </div>
               </DialogTrigger>
@@ -117,7 +104,7 @@ const Profile = () => {
                     Người theo dõi
                   </DialogTitle>
                 </DialogHeader>
-                <ModelFollower />
+                <ModelFollower data ={ arrayFollower }/>
               </DialogContent>
             </Dialog>
 
@@ -125,8 +112,8 @@ const Profile = () => {
             <Dialog>
               <DialogTrigger asChild>
                 <div class="flex items-center gap-2 cursor-pointer">
-                  <span>Đang theo dõi</span> <strong>0</strong>{" "}
-                  <span>người dùng</span>
+                  {/* <span>Đang theo dõi</span> */}
+                  <strong>{countFollowing}</strong> <span>Đang theo dõi</span>
                 </div>
               </DialogTrigger>
               <DialogContent className="w-96">
@@ -135,12 +122,12 @@ const Profile = () => {
                     Đang theo dõi
                   </DialogTitle>
                 </DialogHeader>
-                <ModelFollowing />
+                <ModelFollowing data ={ arrayFollowing }/>
               </DialogContent>
             </Dialog>
           </div>
 
-          <div class="mt-2">
+          {/* <div class="mt-2">
             <p class="font-bold">J</p>
             <a href="#" class="text-blue-500">
               @lesyeuxdenini
@@ -159,7 +146,7 @@ const Profile = () => {
               </a>{" "}
               và 6 người khác theo dõi
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
       <div class="mt-4 border-t">
@@ -237,4 +224,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default MyProfile;

@@ -27,11 +27,12 @@ const ConfirmOTP = () => {
     const navigate = useNavigate();
     const onSubmit = async (data) => {
         const response = await apiFinalRegister({ ...data, email })
-        if (response?.data?.success) {
+        console.log(response);
+        if (response?.success) {
             await dispatch(resetEmail());
             Swal.fire({
                 title: 'Congratulations',
-                text: response?.data?.mes,
+                text: response?.mes,
                 icon: 'success',
                 confirmButtonText: 'Go to login page'
             }).then(async (rs) => {
@@ -40,7 +41,7 @@ const ConfirmOTP = () => {
         } else {
             Swal.fire({
                 title: 'Oops!!!',
-                text: response?.data?.mes,
+                text: response?.mes,
                 icon: 'error',
                 confirmButtonText: 'Go on'
             }).then(async (rs) => {

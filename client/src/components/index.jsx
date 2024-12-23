@@ -1,3 +1,12 @@
-export { default as Sidebar } from './Sidebar'
-export { default as DetailPost } from './DetailPost'
-export { default as Comments } from './Comments'
+export { default as Sidebar } from "./Sidebar";
+export { default as DetailPost } from "./DetailPost";
+export { default as Comments } from "./Comments";
+export { default as Share } from "./Share";
+export { default as Likes } from "./Likes";
+export { default as Search } from "./Search";
+// export { default as CreatePost } from "./CreatePost";
+// export { default as UploadedFilesCard } from "./UploadedFilesCard";
+// export { default as FileUploader } from "./FileUploader";
+export { default as Notification } from "./Notification";
+export { default as ModelFollower } from "./ModelFollower";
+export { default as ModelFollowing } from "./ModelFollowing";

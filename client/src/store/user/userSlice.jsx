@@ -1,63 +1,96 @@
 // features/auth/authSlice.js
-import { createSlice } from '@reduxjs/toolkit'
-import * as actions from './asyncActions'
+import { createSlice } from "@reduxjs/toolkit";
+import * as actions from "./asyncActions";
 
 const initialState = {
-    isLoggedIn: false,
-    current: null,
-    token: null,
-    isLoading: false,
-    mes: ''
-}
+  isLoggedIn: false,
+  current: null,
+  token: null,
+  isLoading: false,
+  mes: "",
+  users: [],
+  friends: []
+};
 
 const userSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers: {
-        login: (state, action) => {
-            state.isLoggedIn = action.payload.success;
-            state.current = action.payload.userData;
-            state.token = action.payload.accessToken
-        },
-        logout: (state) => {
-            state.isLoggedIn = false;
-            state.current = null;
-            state.token = null;
-            state.isLoading = false;
-            state.mes = ''
-        },
-        clearMessage: (state) => {
-            state.mes = ''
-        }
+  name: "user",
+  initialState,
+  reducers: {
+    login: (state, action) => {
+      state.isLoggedIn = action.payload.success;
+      state.current = action.payload.data;
+      state.token = action.payload.accessToken;
     },
-
-    // Code logic xử lý async action
-    extraReducers: (builder) => {
-        // Bắt đầu thực hiện action login (Promise pending)
-        builder.addCase(actions.getCurrent.pending, (state) => {
-            // Bật trạng thái loading
-            state.isLoading = true;
-        });
-
-        // Khi thực hiện action login thành công (Promise fulfilled)
-        builder.addCase(actions.getCurrent.fulfilled, (state, action) => {
-            // Tắt trạng thái loading, lưu thông tin user vào store
-            state.isLoading = false;
-            state.current = action.payload;
-            state.isLoggedIn = true;
-        });
-
-        // Khi thực hiện action login thất bại (Promise rejected)
-        builder.addCase(actions.getCurrent.rejected, (state, action) => {
-            // Tắt trạng thái loading, lưu thông báo lỗi vào store
-            state.isLoading = false;
-            state.current = null;
-            state.isLoggedIn = false;
-            state.token = null;
-            state.mes = 'Login session has expired. Please log in again';
-        });
+    logout: state => {
+      state.isLoggedIn = false;
+      state.current = null;
+      state.token = null;
+      state.isLoading = false;
+      state.mes = "";
     },
+    clearMessage: state => {
+      state.mes = "";
+    },
+    likePost: (state, action) => {
+      // Cập nhật mảng likePost bằng cách thêm user_id vào mảng hoặc loại bỏ nếu đã có
+      const userId = action.payload.userId; // Lấy userId từ payload
+
+      // Lấy postId từ action.payload
+      const postId = action.payload.postId;
+
+      // Kiểm tra xem postId đã có trong mảng likePost chưa
+      if (state.current.likePostId.includes(postId)) {
+        // Nếu bài viết đã được like, bỏ like (loại bỏ postId khỏi mảng)
+        state.current.likePostId = state.current.likePostId.filter(
+          id => id !== postId
+        );
+      } else {
+        // Nếu bài viết chưa được like, thêm postId vào mảng likePost
+        state.current.likePostId = [...state.current.likePostId, postId];
+      }
+    },
+    fetchAllUser: (state, action) => {
+      state.users = action.payload.data;
+    },
+    fetchFriends: (state, action) => {
+      state.friends = action.payload.data;
+    }
+  },
+
+  // Code logic xử lý aync action
+  extraReducers: builder => {
+    // Bắt đầu thực hiện action login (Promise pending)
+    builder.addCase(actions.getCurrent.pending, state => {
+      // Bật trạng thái loading
+      state.isLoading = true;
+    });
+
+    // Khi thực hiện action login thành công (Promise fulfilled)
+    builder.addCase(actions.getCurrent.fulfilled, (state, action) => {
+      // Tắt trạng thái loading, lưu thông tin user vào store
+      state.isLoading = false;
+      state.current = action.payload;
+      state.isLoggedIn = true;
+    });
+
+    // Khi thực hiện action login thất bại (Promise rejected)
+    builder.addCase(actions.getCurrent.rejected, (state, action) => {
+      // Tắt trạng thái loading, lưu thông báo lỗi vào store
+      state.isLoading = false;
+      state.current = null;
+      state.isLoggedIn = false;
+      state.token = null;
+      state.mes = "Login session has expired. Please log in again";
+    });
+  }
 });
 
-export const { login, logout, clearMessage } = userSlice.actions;
-export default userSlice.reducer
+export const {
+  login,
+  logout,
+  clearMessage,
+  likePost,
+  fetchAllUser,
+  fetchFriends
+} = userSlice.actions;
+export default userSlice.reducer;

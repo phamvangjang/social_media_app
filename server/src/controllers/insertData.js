@@ -3,7 +3,7 @@ const ChildPost = require('../models/childPost')
 const Replie = require('../models/replie')
 const Comment = require('../models/comment')
 const Post = require('../models/post')
-const data_posts = require('../../../scrape_data/dataset_instagram-scraper_posts.json')
+const data_posts = require('../../../scrape_data/dataset_instagram-scraper_postvtv24.json')
 const asyncHandler = require('express-async-handler')
 
 const fn = async (user_child) => {
@@ -157,7 +157,7 @@ const insertUser = asyncHandler(async (req, res) => {
         for (let user_child of user?.latestComments) promises.push(fn(user_child))
     }
     await Promise.all(promises)
-    return res.json('insert data success')
+    // return res.json('insert data success')
 })
 
 const insertChildPost = asyncHandler(async (req, res) => {
@@ -166,7 +166,7 @@ const insertChildPost = asyncHandler(async (req, res) => {
         for (let post_child of user?.childPosts) promises.push(fn_childPost(post_child))
     }
     await Promise.all(promises)
-    return res.json('insert data child post success')
+    // return res.json('insert data child post success')
 })
 
 const insertReplie = asyncHandler(async (req, res) => {
@@ -179,7 +179,7 @@ const insertReplie = asyncHandler(async (req, res) => {
         }
     }
     await Promise.all(promises)
-    return res.json('insert data replies success')
+    // return res.json('insert data replies success')
 })
 
 const insertComment = asyncHandler(async (req, res) => {
@@ -190,7 +190,7 @@ const insertComment = asyncHandler(async (req, res) => {
         }
     }
     await Promise.all(promises)
-    return res.json('insert comment success')
+    // return res.json('insert comment success')
 })
 
 const insertPost = asyncHandler(async (req, res) => {
@@ -199,12 +199,24 @@ const insertPost = asyncHandler(async (req, res) => {
         promises.push(fn_posts(post))
     }
     await Promise.all(promises)
-    return res.json('insert post success')
+    // return res.json('insert post success')
+})
+
+const insert = asyncHandler(async (req, res)=>{
+    await insertUser(req, res); // Wait for insertUser to complete
+    await insertChildPost(req, res); // Wait for insertChildPost to complete
+    await insertReplie(req, res); // Wait for insertReplie to complete
+    await insertComment(req, res); // Wait for insertComment to complete
+    await insertPost(req, res); // Wait for insertPost to complete
+
+    // Send a success response after all functions have run
+    return res.json('All data inserted successfully');
 })
 module.exports = {
     insertUser,
     insertChildPost,
     insertReplie,
     insertComment,
-    insertPost
+    insertPost, 
+    insert
 }
