@@ -29,7 +29,7 @@ const Notification = () => {
     return <div>Loading...</div>;
   }
 const { id } = useParams(); // Lấy id từ URL
-console.log(id);
+// console.log(id);
   const [countFollower, setcountFollower] = useState(null);
   const [countFollowing, setcountFollowing] = useState(null);
   const [arrayFollower, setArrayFollower] = useState([]);

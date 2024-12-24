@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { menubars } from '../utils/contants'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import {  Notification, Search } from '.';
+import { CreatePost, Notification, Search } from '.';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogHeader } from '@/components/ui/dialog';
 import { NavLink } from 'react-router-dom';
 import path from '@/utils/path';
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
     const [activeId, setActiveId] = useState(null);
@@ -13,12 +14,23 @@ const Sidebar = () => {
     // const { current } = useSelector((state) => state.user);
     // const user_id = window.location.hash ? window.location.hash.split("/")[1] : current?._id;
     // console.log(activeId);
+    const { current } = useSelector((state) => state.user);
+    const [prev, setPrev] = useState(false);
     return (
         <div className="w-1/4 bg-white h-full border-r border-gray-200">
             <div className="flex flex-col gap-6 justify-between p-4 fixed w-1/4 h-screen bg-white">
                 <div className="flex flex-col gap-6">
                     <div className="text-2xl font-bold mb-6">Instagram</div>
                     <div className="space-y-1">
+                        <NavLink
+                            replace={false}
+                            to={`/${current?._id}`}
+                            className={prev ? active : noActive}
+                            onClick={() => setActiveId((prev) => setPrev(!prev))}
+                        >
+                            <span className='text-2xl'><i className="fas fa-home" /></span>
+                            <span>Trang chủ</span>
+                        </NavLink>
                         {menubars?.map(el => {
                             return (
                                 <NavLink
@@ -60,7 +72,7 @@ const Sidebar = () => {
                                 </div>
                             </DialogTrigger>
                             <DialogContent className='h-[80%]'>
-                                {/* <CreatePost /> */}
+                                <CreatePost />
                             </DialogContent>
                         </Dialog>
 
@@ -78,7 +90,7 @@ const Sidebar = () => {
                                 <SheetHeader>
                                     <SheetTitle>Tìm kiếm</SheetTitle>
                                     <SheetDescription>
-                                        
+
                                     </SheetDescription>
                                 </SheetHeader>
                                 <Search />

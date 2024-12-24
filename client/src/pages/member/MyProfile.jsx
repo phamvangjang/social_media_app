@@ -1,4 +1,4 @@
-import { apiGetFollower, apiGetFollowing } from "@/apis";
+import { apiGetFollower, apiGetFollowing, apiGetPostsByuid } from "@/apis";
 import { Likes, ModelFollower, ModelFollowing, Share } from "@/components";
 import {
   Dialog,
@@ -12,11 +12,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 const MyProfile = () => {
+  const [posts, setPosts] = useState([])
+  const [uid, setUid] = useState('')
   const currentUser = useSelector(state => state.user.current);
-  if (!currentUser) {
-    return <div>Loading...</div>;
-  }
-const { id } = useParams(); // Lấy id từ URL
+  // if (!currentUser) {
+  //   return <div>Loading...</div>;
+  // }
+  const { id } = useParams(); // Lấy id từ URL
 
   const [countFollower, setcountFollower] = useState(null);
   const [countFollowing, setcountFollowing] = useState(null);
@@ -25,13 +27,13 @@ const { id } = useParams(); // Lấy id từ URL
   useEffect(
     () => {
       if (id) {
-        apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
-        .then(response => {
-          if (response.status === 'success') {
+        apiGetFollower(id, currentUser?.token) // Hàm giả lập gọi API
+          .then(response => {
+            if (response.status === 'success') {
               setcountFollower(response.count); // Cập nhật countFollower
               setArrayFollower(response.data);
             }
-      })
+          })
           .catch(error => console.error("Error fetching user:", error));
       }
     },
@@ -41,30 +43,29 @@ const { id } = useParams(); // Lấy id từ URL
   useEffect(
     () => {
       if (id) {
-        apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
-        .then(response => {
-          if (response.status === 'success') {
+        apiGetFollowing(id, currentUser?.token) // Hàm giả lập gọi API
+          .then(response => {
+            if (response.status === 'success') {
               setcountFollowing(response.count); // Cập nhật countFollower
               setArrayFollowing(response.data);
             }
-      })
+          })
           .catch(error => console.error("Error fetching user:", error));
       }
     },
     [id]
   );
-
-  
-
-  console.log(currentUser.avatar);
-  // Gọi API để lấy thông tin user
-
+  // setUid(currentUser._id);
+  // useEffect(() => {
+  //   const response = apiGetPostsByuid(uid)
+  //   console.log(response)
+  // }, [currentUser._id, uid]);
   return (
     <div class="max-w-4xl mx-auto p-4">
       <div class="flex items-center space-x-4">
         <div class="relative">
           <img
-            src={currentUser?.avatar||"https://placehold.co/150x150"} 
+            src={currentUser?.avatar || "https://placehold.co/150x150"}
             alt="Profile"
             class="w-36 h-36 rounded-full border-4 border-white"
           />
@@ -104,7 +105,7 @@ const { id } = useParams(); // Lấy id từ URL
                     Người theo dõi
                   </DialogTitle>
                 </DialogHeader>
-                <ModelFollower data ={ arrayFollower }/>
+                <ModelFollower data={arrayFollower} />
               </DialogContent>
             </Dialog>
 
@@ -122,31 +123,10 @@ const { id } = useParams(); // Lấy id từ URL
                     Đang theo dõi
                   </DialogTitle>
                 </DialogHeader>
-                <ModelFollowing data ={ arrayFollowing }/>
+                <ModelFollowing data={arrayFollowing} />
               </DialogContent>
             </Dialog>
           </div>
-
-          {/* <div class="mt-2">
-            <p class="font-bold">J</p>
-            <a href="#" class="text-blue-500">
-              @lesyeuxdenini
-            </a>
-            <br />
-            <a href="#" class="text-blue-500">
-              jenn.ie
-            </a>
-            <p>
-              Có{" "}
-              <a href="#" class="text-blue-500">
-                its.giahuy
-              </a>,{" "}
-              <a href="#" class="text-blue-500">
-                trongquy03
-              </a>{" "}
-              và 6 người khác theo dõi
-            </p>
-          </div> */}
         </div>
       </div>
       <div class="mt-4 border-t">

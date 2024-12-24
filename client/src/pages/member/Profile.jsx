@@ -13,73 +13,75 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 const Profile = () => {
- 
+  const [posts, setPosts] = useState([])
+
   const { id } = useParams(); // Lấy id từ URL
-    console.log(id);
-    const [countFollower, setcountFollower] = useState(null);
-    const [countFollowing, setcountFollowing] = useState(null);
-    const [arrayFollower, setArrayFollower] = useState([]);
-    const [arrayFollowing, setArrayFollowing] = useState([]);
-    const [user, setUser] = useState([]);
-    const dispatch = useDispatch();
-     // Fetch current user info
-      useEffect(() => {
-        if (id) {
-          apiGetCurrentUser(id)
-            .then((response) => {
-              setUser(response.data);
-            })
-            .catch((error) => {
-              console.error("Error fetching user:", error);
-            });
-        }
-      }, [id, dispatch]);
-      const currentUser = useSelector(state => state.user.current);
-      if (!currentUser) {
-        return <div>Loading...</div>;
-      }
-    // useEffect(
-    //   () => {
-    //     if (id) {
-    //       apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
-    //       .then(response => {
-    //         if (response.status === 'success') {
-    //             setcountFollower(response.count); // Cập nhật countFollower
-    //             setArrayFollower(response.data);
-    //           }
-    //     })
-    //         .catch(error => console.error("Error fetching user:", error));
-    //     }
-    //   },
-    //   [id]
-    // );
-  
-    // useEffect(
-    //   () => {
-    //     if (id) {
-    //       apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
-    //       .then(response => {
-    //         if (response.status === 'success') {
-    //             setcountFollowing(response.count); // Cập nhật countFollower
-    //             setArrayFollowing(response.data);
-    //           }
-    //     })
-    //         .catch(error => console.error("Error fetching user:", error));
-    //     }
-    //   },
-    //   [id]
-    // );
-  
-    console.log(user);
-    
-  
-    console.log(currentUser.avatar);
+  // console.log(id);
+  const [countFollower, setcountFollower] = useState(null);
+  const [countFollowing, setcountFollowing] = useState(null);
+  const [arrayFollower, setArrayFollower] = useState([]);
+  const [arrayFollowing, setArrayFollowing] = useState([]);
+  const [user, setUser] = useState([]);
+  const dispatch = useDispatch();
+  // Fetch current user info
+  useEffect(() => {
+    if (id) {
+      apiGetCurrentUser(id)
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching user:", error);
+        });
+    }
+  }, [id, dispatch]);
+
+  const currentUser = useSelector(state => state.user.current);
+  if (!currentUser) {
+    return <div>Loading...</div>;
+  }
+  // useEffect(
+  //   () => {
+  //     if (id) {
+  //       apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
+  //       .then(response => {
+  //         if (response.status === 'success') {
+  //             setcountFollower(response.count); // Cập nhật countFollower
+  //             setArrayFollower(response.data);
+  //           }
+  //     })
+  //         .catch(error => console.error("Error fetching user:", error));
+  //     }
+  //   },
+  //   [id]
+  // );
+
+  // useEffect(
+  //   () => {
+  //     if (id) {
+  //       apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
+  //       .then(response => {
+  //         if (response.status === 'success') {
+  //             setcountFollowing(response.count); // Cập nhật countFollower
+  //             setArrayFollowing(response.data);
+  //           }
+  //     })
+  //         .catch(error => console.error("Error fetching user:", error));
+  //     }
+  //   },
+  //   [id]
+  // );
+
+  console.log(user);
+
+
+  // console.log(currentUser.avatar);
   return (
     <div class="max-w-4xl mx-auto p-4">
       <div class="flex items-center space-x-4">
         <div class="relative">
           <img
-            src={user?.avatar||"https://placehold.co/150x150"} 
+            src={user?.avatar || "https://placehold.co/150x150"}
             alt="Profile"
             class="w-36 h-36 rounded-full border-4 border-white"
           />
@@ -140,26 +142,7 @@ const Profile = () => {
             </Dialog>
           </div>
 
-          <div class="mt-2">
-            <p class="font-bold">J</p>
-            <a href="#" class="text-blue-500">
-              @lesyeuxdenini
-            </a>
-            <br />
-            <a href="#" class="text-blue-500">
-              jenn.ie
-            </a>
-            <p>
-              Có{" "}
-              <a href="#" class="text-blue-500">
-                its.giahuy
-              </a>,{" "}
-              <a href="#" class="text-blue-500">
-                trongquy03
-              </a>{" "}
-              và 6 người khác theo dõi
-            </p>
-          </div>
+
         </div>
       </div>
       <div class="mt-4 border-t">

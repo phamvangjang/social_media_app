@@ -14,7 +14,6 @@ import MyProfile from "./pages/member/MyProfile";
 
 const App = () => {
   useEffect(() => {
-    console.log(window.location.pathname);
     const currentpath = window.location.pathname;
     // Kiểm tra nếu route hiện tại là /accounts/login thì chuyển hướng đến localhost:3001
     if (currentpath === "/accounts/login") {

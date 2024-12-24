@@ -1,7 +1,7 @@
 const path = {
   //member
   MEMBER_LAYOUT: "/*",
-  HOME: "",
+  HOME: "*",
   EXPLORE: "explore",
   REELS: "reels",
   DIRECT_INBOX: "direct-inbox",

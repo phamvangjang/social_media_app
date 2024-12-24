@@ -125,14 +125,6 @@ const Home = () => {
       {/* Main Content */}
       <div className="w-2/3 p-4">
         {/* Stories */}
-        <div className="flex space-x-4 mb-6">
-          {["1", "2", "3", "4"].map((_, index) => (
-            <div key={index} className="w-16 h-16 rounded-full border-2 border-pink-500 overflow-hidden">
-              <img src="https://placehold.co/64x64" alt={`Story ${index + 1}`} />
-            </div>
-          ))}
-        </div>
-
         {/* Post */}
         <Post />
       </div>
