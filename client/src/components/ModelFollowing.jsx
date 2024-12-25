@@ -4,72 +4,8 @@ import { connectSocket, socket } from "../socket";
 
 
 const ModelFollowing = ({data}) => {
-  //   const users = [
-  //     {
-  //       username: "nguyentienduc2602",
-  //       name: "Nguyễn Tiến Đức",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     },
-  //     {
-  //       username: "nguyen.huyphu",
-  //       name: "Nguyen Huy Phú",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     },
-  //     {
-  //       username: "selenagomez",
-  //       name: "Selena Gomez",
-  //       img: "https://placehold.co/50x50",
-  //       following: true,
-  //       verified: true
-  //     },
-  //     {
-  //       username: "hung_heoo",
-  //       name: "Hùng Trọng Đình",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     },
-  //     {
-  //       username: "._tuongvi_",
-  //       name: "Tường Vi",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     },
-  //     {
-  //       username: "nguyentienduc2602",
-  //       name: "Nguyễn Tiến Đức",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     },
-  //     {
-  //       username: "nguyen.huyphu",
-  //       name: "Nguyen Huy Phú",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     },
-  //     {
-  //       username: "selenagomez",
-  //       name: "Selena Gomez",
-  //       img: "https://placehold.co/50x50",
-  //       following: true,
-  //       verified: true
-  //     },
-  //     {
-  //       username: "hung_heoo",
-  //       name: "Hùng Trọng Đình",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     },
-  //     {
-  //       username: "._tuongvi_",
-  //       name: "Tường Vi",
-  //       img: "https://placehold.co/50x50",
-  //       following: true
-  //     }
-  //   ];
   const params = useParams();
-  console.log(data);
+  // console.log(data);
   const [trigger, setTrigger] = useState(false);
   const [userId, setUserId] = useState();
   // Socket connection
@@ -126,7 +62,7 @@ const ModelFollowing = ({data}) => {
       <div className="relative mb-4">
         <input
           type="text"
-          placeholder="c"
+          placeholder="Tìm kiếm"
           className="w-full p-2 pl-10 border rounded-lg focus:outline-none"
         />
         <i className="fas fa-search absolute left-3 top-3 text-gray-400" />

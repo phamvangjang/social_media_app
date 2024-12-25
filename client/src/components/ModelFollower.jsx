@@ -3,7 +3,7 @@ import { connectSocket, socket } from "../socket";
 import { useParams } from "react-router-dom";
 
 
-const ModelFollower = ({data}) => {
+const ModelFollower = ({ data }) => {
   // const followers = [
   //     { name: "tester", username: "khidot705 và vangiang10.01", img: "https://placehold.co/50x50", verified: false },
   //     { name: "Van Giang", username: "vangiang10.01", img: "https://placehold.co/50x50", verified: false },
@@ -17,22 +17,22 @@ const ModelFollower = ({data}) => {
   //     { name: "Dwayne Johnson", username: "therock", img: "https://placehold.co/50x50", verified: true },
   // ];
   const params = useParams();
-  console.log(params.id);
-    const [trigger, setTrigger] = useState(false);
-    const [userId , setUserId] = useState();
-    // Socket connection
-    useEffect(() => {
-        if (params.id) {
-          connectSocket(params.id);
-          socket.on("message", (data) => {
-            console.log(data); // Handle incoming messages here
-          });
-        }
-    
-        return () => {
-          socket.disconnect();
-        };
-      }, [params.id]);
+  // console.log(params.id);
+  const [trigger, setTrigger] = useState(false);
+  const [userId, setUserId] = useState();
+  // Socket connection
+  useEffect(() => {
+    if (params.id) {
+      connectSocket(params.id);
+      socket.on("message", (data) => {
+        // console.log(data); // Handle incoming messages here
+      });
+    }
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [params.id]);
 
   const handleSendRequest = (_id) => {
     console.log("Sending friend request...");
@@ -58,7 +58,7 @@ const ModelFollower = ({data}) => {
       }
     });
   };
-   
+
 
   return (
     <div className="max-w-sm">
@@ -74,40 +74,40 @@ const ModelFollower = ({data}) => {
         {data.length === 0
           ? <p>No followers found.</p>
           : <div
-              className="space-y-4 overflow-y-auto no-scrollbar"
-              style={{ maxHeight: "300px" }}
-            >
-              {data.map((follower, index) =>
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <img
-                      src="https://placehold.co/50x50"
-                      alt={`Profile of ${follower.sender?.username}`}
-                      className="w-10 h-10 rounded-full"
-                    />
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-semibold">
-                          {follower.sender?.username}
-                        </span>
-                        {follower.recipient ? (
-                          <span className="text-blue-500 text-sm hover:cursor-pointer" onClick={() => handleSendRequest(follower.sender?._id)}>
-                            · Theo dõi
-                          </span>) : (
-                            <span className="text-blue-500 text-sm hover:cursor-pointer" onClick={() => handleCancelRequest(follower.sender?._id)}>
-                            · Đang theo dõi
-                          </span>
-                          )}
-                      </div>
-                      <span className="text-gray-500 text-sm">
-                        {follower.sender?.firstName} {follower.sender?.lastName}
+            className="space-y-4 overflow-y-auto no-scrollbar"
+            style={{ maxHeight: "300px" }}
+          >
+            {data.map((follower, index) =>
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <img
+                    src="https://placehold.co/50x50"
+                    alt={`Profile of ${follower.sender?.username}`}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold">
+                        {follower.sender?.username}
                       </span>
+                      {follower.recipient ? (
+                        <span className="text-blue-500 text-sm hover:cursor-pointer" onClick={() => handleSendRequest(follower.sender?._id)}>
+                          · Theo dõi
+                        </span>) : (
+                        <span className="text-blue-500 text-sm hover:cursor-pointer" onClick={() => handleCancelRequest(follower.sender?._id)}>
+                          · Đang theo dõi
+                        </span>
+                      )}
                     </div>
+                    <span className="text-gray-500 text-sm">
+                      {follower.sender?.firstName} {follower.sender?.lastName}
+                    </span>
                   </div>
-                  <button className="text-red-500 font-semibold hover:cursor-pointer" onClick={() => handleCancelRequest(follower.sender?._id)}>Xóa</button>
                 </div>
-              )}
-            </div>}
+                <button className="text-red-500 font-semibold hover:cursor-pointer" onClick={() => handleCancelRequest(follower.sender?._id)}>Xóa</button>
+              </div>
+            )}
+          </div>}
       </div>
     </div>
   );

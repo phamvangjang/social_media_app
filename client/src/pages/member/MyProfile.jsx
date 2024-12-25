@@ -1,5 +1,5 @@
 import { apiGetFollower, apiGetFollowing, apiGetPostsByuid } from "@/apis";
-import { Likes, ModelFollower, ModelFollowing, Share } from "@/components";
+import { DetailPost, Likes, ModelFollower, ModelFollowing, Share } from "@/components";
 import {
   Dialog,
   DialogContent,
@@ -12,19 +12,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 const MyProfile = () => {
-  const [posts, setPosts] = useState([])
-  const [uid, setUid] = useState('')
   const currentUser = useSelector(state => state.user.current);
-  // if (!currentUser) {
-  //   return <div>Loading...</div>;
-  // }
   const { id } = useParams(); // Lấy id từ URL
-
   const [countFollower, setcountFollower] = useState(null);
   const [countFollowing, setcountFollowing] = useState(null);
   const [arrayFollower, setArrayFollower] = useState([]);
   const [arrayFollowing, setArrayFollowing] = useState([]);
-  const [post, setPost] = useState([])
+  const [posts, setPosts] = useState([])
   useEffect(
     () => {
       if (id) {
@@ -56,18 +50,14 @@ const MyProfile = () => {
     },
     [currentUser?._id]
   );
-  // setUid(currentUser._id);
-  console.log(currentUser?._id)
- 
+
   useEffect(
     () => {
       if (currentUser?._id) {
         apiGetPostsByuid(currentUser?._id, currentUser?.token) // Hàm giả lập gọi API
           .then(response => {
             if (response.success) {
-              setPost(response.data)
-              console.log(response);
-              console.log(post);
+              setPosts(response?.response)
             }
           })
           .catch(error => console.error("Error fetching user:", error));
@@ -103,10 +93,11 @@ const MyProfile = () => {
 
           <div class="mt-2 flex items-center gap-4">
             <div class="flex items-center gap-1">
-              <span className="font-bold">1.186</span>
+              <span className="font-bold">{posts.length}</span>
               <span>bài viết</span>
             </div>
 
+            {/* Người khác theo dõi */}
             <Dialog>
               <DialogTrigger asChild>
                 <div class="ml-4 flex items-center gap-1 cursor-pointer">
@@ -154,15 +145,22 @@ const MyProfile = () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-1 mt-4">
-        {post ? post.map((el) => (
-          <img
-            key={el.id}
-            src={el.images}
-            alt="Post 1"
-            class="w-full h-full object-cover"
-          />
-        )) : null}
+      <div class="grid grid-cols-3 gap-1 mt-4 ">
+        {posts.length > 0 && posts.map((el) => (
+          <Dialog key={el._id}>
+            <DialogTrigger asChild>
+              <img
+                crossOrigin="anonymous"
+                src={el.images.length > 0 ? `${el.images[0]}` : el.images}
+                alt={`Post ${el._id}`}
+                className="w-full mb-4 object-cover cursor-pointer"
+              />
+            </DialogTrigger>
+            <DialogContent className='w-full h-[90%]'>
+              <DetailPost data={{ id: el?._id, pid: el?._id, shortCode: el?.shortCode }} />
+            </DialogContent>
+          </Dialog>
+        ))}
       </div>
     </div>
   );

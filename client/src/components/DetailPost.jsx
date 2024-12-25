@@ -21,16 +21,10 @@ const DetailPost = ({ data }) => {
     const dispatch = useDispatch();
     const pid = data?.pid;
 
-    console.log(data)
-    // Fetch post details
     const fetchPost = async () => {
         try {
             const response = await apis.apiGetPost(pid);
-            console.log(response);
-            // if (response?.success) 
-                setPost(response.post);
-            console.log(response.post);
-            console.log(post);
+            setPost(response.post);
 
         } catch (error) {
             console.error('Error fetching post:', error);
@@ -78,14 +72,14 @@ const DetailPost = ({ data }) => {
 
     // Add comment
     const handleAddComment = async () => {
-        console.log(newComment);
-    
+        // console.log(newComment);
+
         // Kiểm tra nếu comment trống
         if (!newComment.trim()) {
             console.warn("Comment cannot be empty");
             return;
         }
-    
+
         try {
             // Gửi request thêm comment đến API
             const response = await apis.apiCommentPost({
@@ -95,7 +89,7 @@ const DetailPost = ({ data }) => {
                 ownerProfilePicUrl: current?.avatar, // Avatar của người dùng hiện tại
                 ownerId: current._id, // ID của người dùng hiện tại
             });
-    
+
             // Kiểm tra phản hồi từ server
             if (response?.mes === 'Comment added successfully' && response?.comment) {
                 // Cập nhật danh sách comments
@@ -109,7 +103,7 @@ const DetailPost = ({ data }) => {
             console.error("Error adding comment:", error);
         }
     };
-    
+
 
     // Effects
     useEffect(() => {
@@ -120,47 +114,47 @@ const DetailPost = ({ data }) => {
         }
     }, [pid]);
 
-    useEffect(() => {
-        if (data?.shortCode) navigate(`/p/${data?.shortCode}`);
-    }, [data?.shortCode]);
+    // useEffect(() => {
+    //     if (data?.shortCode) navigate(`/p/${data?.shortCode}`);
+    // }, [data?.shortCode]);
 
     const handleToggleLikePost = async (postId) => {
-            dispatch(likePost({ postId }));
+        dispatch(likePost({ postId }));
+        setPosts((prevPosts) =>
+            prevPosts.map((post) =>
+                post._id === postId
+                    ? {
+                        ...post,
+                        isLiked: post.arrayUserLike.includes(user_id),
+                        likesCount: current?.likePostId.includes(postId)
+                            ? post.likesCount - 1
+                            : post.likesCount + 1,
+                        // Cập nhật lại arrayUserLike
+                        arrayUserLike: post.arrayUserLike.includes(user_id)
+                            ? post.arrayUserLike.filter((el) => el !== user_id)
+                            : [...post.arrayUserLike, user_id],
+                    }
+                    : post
+            )
+        );
+
+        try {
+            await apis.apiLikePost({ uid: current?._id, pid: postId });
+        } catch (error) {
+            console.error("Failed to toggle like:", error);
+            // Khôi phục trạng thái nếu API thất bại
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
                     post._id === postId
-            ? {
-                ...post,
-                isLiked: post.arrayUserLike.includes(user_id),
-                likesCount: current?.likePostId.includes(postId)
-                    ? post.likesCount - 1
-                    : post.likesCount + 1,
-                // Cập nhật lại arrayUserLike
-                arrayUserLike: post.arrayUserLike.includes(user_id)
-                    ? post.arrayUserLike.filter((el) => el !== user_id)
-                    : [...post.arrayUserLike, user_id],
-            }
-          : post
+                        ? { ...post, isLiked: !post.isLiked, likesCount: post.isLiked ? post.likesCount + 1 : post.likesCount - 1 }
+                        : post
                 )
             );
-    
-            try {
-                await apis.apiLikePost({ uid: current?._id,pid:postId });
-            } catch (error) {
-                console.error("Failed to toggle like:", error);
-                // Khôi phục trạng thái nếu API thất bại
-                setPosts((prevPosts) =>
-                    prevPosts.map((post) =>
-                        post._id === postId
-                            ? { ...post, isLiked: !post.isLiked, likesCount: post.isLiked ? post.likesCount + 1 : post.likesCount - 1 }
-                            : post
-                    )
-                );
-            }
-        };
+        }
+    };
 
     return (
-        <div className="w-full grid grid-cols-3">
+        <div className="w-full grid grid-cols-3 h-full">
             {/* Image Section */}
             {/* <div className="flex-1">
                 <img
@@ -170,28 +164,32 @@ const DetailPost = ({ data }) => {
                     alt="Post"
                 />
             </div> */}
-             <div className='col-span-2'>
-             {post?.type !== "Sidecar" ? (
-                                        <img
-                                            crossOrigin="anonymous"
-                                            src={post?.images}
-                                            alt={"post"}
-                                            className="w-[600px] mb-4 object-contain h-auto min-h-[400px]"
-                                        />
-                                    ) : (
-                                        <Carousel>
-                                            <CarouselContent>
-                                                {post?.images.map((image, index) => (
-                                                    <CarouselItem key={index} className='w-full'>
-                                                        <img crossOrigin="anonymous" src={image} alt="" className="w-full object-cover h-[700px]" />
-                                                    </CarouselItem>
-                                                ))}
-                                            </CarouselContent>
-                                            <CarouselPrevious />
-                                            <CarouselNext />
-                                        </Carousel>
-                                    )}
-             </div>
+            <div className='col-span-2'>
+                {post?.type !== "Sidecar" ? (
+                    <img
+                        crossOrigin="anonymous"
+                        src={post?.images}
+                        alt={"post"}
+                        className="w-[600px] mb-4 object-contain h-auto min-h-[400px]"
+                    />
+                ) : (
+                    <Carousel>
+                        <CarouselContent>
+                            {post?.images.map((image, index) => (
+                                <CarouselItem key={index}>
+                                    <img
+                                        crossOrigin="anonymous"
+                                        src={image}
+                                        alt=""
+                                        className="object-cover w-full max-h-[620px] flex items-center justify-center" />
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious className='left-4' />
+                        <CarouselNext className='right-4' />
+                    </Carousel>
+                )}
+            </div>
 
             {/* Content Section */}
             <div className="flex-1 flex-col justify-between p-2 h-full relative">
@@ -210,7 +208,7 @@ const DetailPost = ({ data }) => {
                                 <div className="font-bold">
                                     {post?.ownerUsername}
                                     <i className="fas fa-check-circle text-blue-500 ml-2 mr-2"></i>
-                                  
+
                                 </div>
                             </div>
                             <i className="fas fa-ellipsis-h ml-auto"></i>
@@ -226,21 +224,21 @@ const DetailPost = ({ data }) => {
                 <div className="flex flex-col absolute bottom-0 w-full">
                     <span className="mb-1 border-gray-200 border-b-[1px]"></span>
                     <div className="pb-2">
-                       
-                         <div className="flex items-center space-x-4 mb-2">
-                                                    <span
-                                                        className="cursor-pointer"
-                                                        onClick={() => handleToggleLikePost(post._id)}
-                                                    >
-                                                        {current?.likePostId.includes(post._id) ? (
-                                                            <FaHeart size={26} color="#ff2929" />
-                                                        ) : (
-                                                            <CiHeart size={26} />
-                                                        )}
-                                                    </span>
-                                                    <i className="far fa-comment cursor-pointer"></i>
-                                                    <i className="far fa-paper-plane cursor-pointer"></i>
-                                                </div>
+
+                        <div className="flex items-center space-x-4 mb-2">
+                            <span
+                                className="cursor-pointer"
+                                onClick={() => handleToggleLikePost(post._id)}
+                            >
+                                {current?.likePostId.includes(post._id) ? (
+                                    <FaHeart size={26} color="#ff2929" />
+                                ) : (
+                                    <CiHeart size={26} />
+                                )}
+                            </span>
+                            <i className="far fa-comment cursor-pointer"></i>
+                            <i className="far fa-paper-plane cursor-pointer"></i>
+                        </div>
                     </div>
                     <div>
                         <div className="text-gray-500 text-sm font-bold">{`${formatComment(

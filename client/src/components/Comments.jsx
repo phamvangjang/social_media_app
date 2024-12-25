@@ -4,7 +4,7 @@ import React from 'react'
 const Comments = ({ data }) => {
     const post = data?.post;
     const comments = data?.comments;
-    console.log(comments);
+    // console.log(comments);
     return (
         <div className='flex flex-col h-[420px] overflow-y-scroll no-scrollbar'>
             <div className="flex items-center mb-4 mt-2">

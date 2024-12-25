@@ -62,7 +62,7 @@ const Search = () => {
       verified: true
     }
   ];
-  
+
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
   const { current } = useSelector((state) => state.user);
@@ -72,7 +72,7 @@ const Search = () => {
     const fetchUsers = async () => {
       try {
         const response = await apiGetAllUser(current.token);
-        console.log(response);
+        // console.log(response);
         setUsers(response.data); // Sử dụng setUsers đúng
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -81,14 +81,14 @@ const Search = () => {
 
     if (current?.token) fetchUsers();
   }, [current?.token]);
-console.log(users);
+  // console.log(users);
   const filteredSearches = users.filter(
     search =>
-    search.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    search.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    search.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+      search.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      search.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      search.lastName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const handleToProfile = (userId)=>{
+  const handleToProfile = (userId) => {
     navigate(`/profile/${userId}`)
   }
   return (
@@ -111,11 +111,12 @@ console.log(users);
       </div>
       <div className="overflow-y-auto no-scrollbar h-[500px]">
         {filteredSearches.map((search, index) =>
-          <div key={index} className="flex items-center justify-between mb-4 cursor-pointer" onClick={()=>{
+          <div key={index} className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => {
             handleToProfile(search._id)
           }}>
             <div className="flex items-center">
               <img
+                crossOrigin="anonymous"
                 src={search.avatar}
                 alt={`${search.name} profile picture`}
                 className="w-12 h-12 rounded-full mr-3"

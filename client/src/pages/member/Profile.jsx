@@ -1,5 +1,5 @@
 import { apiGetCurrentUser, apiGetFollower, apiGetFollowing, apiGetPostsByuid } from "@/apis";
-import { Likes, ModelFollower, ModelFollowing, Share } from "@/components";
+import { DetailPost, Likes, ModelFollower, ModelFollowing } from "@/components";
 import {
   Dialog,
   DialogContent,
@@ -7,96 +7,56 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { login } from "@/store/user/userSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 const Profile = () => {
-  const [posts, setPosts] = useState([])
-
-  const { id } = useParams(); // Lấy id từ URL
-  // console.log(id);
+  const params = useParams();
+  const [posts, setPosts] = useState([]);
+  const { id } = useParams();
   const [countFollower, setcountFollower] = useState(null);
   const [countFollowing, setcountFollowing] = useState(null);
   const [arrayFollower, setArrayFollower] = useState([]);
   const [arrayFollowing, setArrayFollowing] = useState([]);
-  const [user, setUser] = useState([]);
-  const [post, setPost] = useState([])
-  
-  const dispatch = useDispatch();
-  // Fetch current user info
-  useEffect(() => {
-    if (id) {
-      apiGetCurrentUser(id)
-        .then((response) => {
-          setUser(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching user:", error);
-        });
-    }
-  }, [id, dispatch]);
+  const [user, setUser] = useState('');
 
-  
-    useEffect(
-      () => {
-        if (id) {
-          apiGetPostsByuid(id, currentUser?.token) // Hàm giả lập gọi API
-            .then(response => {
-              if (response.success) {
-                setPost(response.data)
-                console.log(response);
-                console.log(post);
-              }
-            })
-            .catch(error => console.error("Error fetching user:", error));
-        }
-      },
-      [id]
-    );
+
   const currentUser = useSelector(state => state.user.current);
   if (!currentUser) {
     return <div>Loading...</div>;
   }
-  useEffect(
-    () => {
-      if (id) {
-        apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
-        .then(response => {
-          if (response.status === 'success') {
-              setcountFollower(response.count); // Cập nhật countFollower
-              setArrayFollower(response.data);
-            }
-      })
-          .catch(error => console.error("Error fetching user:", error));
-      }
-    },
-    [id]
-  );
+  const fetchGetFollower = async (q) => {
+    const follower = await apiGetFollower(q, currentUser?.token);
+    if (follower.status === 'success') {
+      setcountFollower(follower.count);
+      setArrayFollower(follower.data);
+    }
+  }
 
-  console.log()
+  const fetchGetFollowing = async (q) => {
+    const following = await apiGetFollowing(id, currentUser?.token);
+    if (following.status === 'success') {
+      setcountFollowing(following.count);
+      setArrayFollowing(following.data);
+    }
+  }
 
-  useEffect(
-    () => {
-      if (id) {
-        apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
-        .then(response => {
-          if (response.status === 'success') {
-              setcountFollowing(response.count); // Cập nhật countFollower
-              setArrayFollowing(response.data);
-            }
-      })
-          .catch(error => console.error("Error fetching user:", error));
-      }
-    },
-    [id]
-  );
+  const fetchUser = async (q) => {
+    const response = await apiGetPostsByuid(q);
+    const user = await apiGetCurrentUser(q);
+    if (response?.success && user?.status === 'success') {
+      setPosts(response?.response);
+      setUser(user?.data)
+    }
+  }
 
-  console.log(user);
-
-
-  // console.log(currentUser.avatar);
+  useEffect(() => {
+    const queries = params.id
+    fetchUser(queries);
+    fetchGetFollowing(queries);
+    fetchGetFollower(queries);
+  }, [params])
   return (
     <div class="max-w-4xl mx-auto p-4">
       <div class="flex items-center space-x-4">
@@ -123,14 +83,15 @@ const Profile = () => {
 
           <div class="mt-2 flex items-center gap-4">
             <div class="flex items-center gap-1">
-              <span className="font-bold">1.186</span>
+              <span className="font-bold">{posts.length}</span>
               <span>bài viết</span>
             </div>
 
+            {/* Người khác theo dõi*/}
             <Dialog>
               <DialogTrigger asChild>
                 <div class="ml-4 flex items-center gap-1 cursor-pointer">
-                  <span className="font-bold">85,9 Tr</span>
+                  <span className="font-bold">{countFollower || 0}</span>
                   <span>người theo dõi</span>
                 </div>
               </DialogTrigger>
@@ -140,7 +101,7 @@ const Profile = () => {
                     Người theo dõi
                   </DialogTitle>
                 </DialogHeader>
-                <ModelFollower />
+                <ModelFollower data={arrayFollower} />
               </DialogContent>
             </Dialog>
 
@@ -148,8 +109,8 @@ const Profile = () => {
             <Dialog>
               <DialogTrigger asChild>
                 <div class="flex items-center gap-2 cursor-pointer">
-                  <span>Đang theo dõi</span> <strong>0</strong>{" "}
-                  <span>người dùng</span>
+                  <span>Đang theo dõi</span> <strong>{countFollowing}</strong>
+                  <span> người dùng</span>
                 </div>
               </DialogTrigger>
               <DialogContent className="w-96">
@@ -158,12 +119,10 @@ const Profile = () => {
                     Đang theo dõi
                   </DialogTitle>
                 </DialogHeader>
-                <ModelFollowing />
+                <ModelFollowing data={arrayFollowing} />
               </DialogContent>
             </Dialog>
           </div>
-
-
         </div>
       </div>
       <div class="mt-4 border-t">
@@ -176,14 +135,20 @@ const Profile = () => {
         </div>
       </div>
       <div class="grid grid-cols-3 gap-1 mt-4">
-        {post ? post.map((el) => (
-          <img
-            key={el.id}
-            src={el.images[0] || el.displayUrl}
-            alt={`Post ${el.id}`}
-            class="w-full h-full object-cover"
-          />
-        )) : null}
+        {posts.length > 0 && posts.map((el) => (
+          <Dialog key={el._id}>
+            <DialogTrigger asChild>
+              <img
+                src={el.images.length > 0 ? `${el.images[0]}` : el.images}
+                alt={`Post ${el._id}`}
+                class="w-full h-full object-cover cursor-pointer mb-4"
+              />
+            </DialogTrigger>
+            <DialogContent className='w-full h-[90%]'>
+              <DetailPost data={{ id: el?._id, pid: el?._id, shortCode: el?.shortCode }} />
+            </DialogContent>
+          </Dialog>
+        ))}
       </div>
     </div>
   );
