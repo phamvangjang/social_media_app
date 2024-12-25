@@ -136,7 +136,7 @@ console.log(filteredRequests)
                     <div key={index} className="items-center justify-between p-2 border-b w-full grid grid-cols-2">
 
                         <div className="flex items-center space-x-4 col-span-1">
-                            <img src={request.sender.img} alt={`Profile picture of ${request.sender?.name}`} className="w-12 h-12 rounded-full" />
+                            <img src={request.sender.avatar} alt={`Profile picture of ${request.sender?.name}`} className="w-12 h-12 rounded-full" />
                             <div className='flex items-start justify-start flex-col'>
                                 <div className="font-bold">{request.sender?.username}</div>
                                 <div className="text-gray-500">{request.sender?.name}</div>

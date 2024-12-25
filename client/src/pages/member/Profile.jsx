@@ -46,10 +46,11 @@ const Profile = () => {
     const response = await apiGetPostsByuid(q);
     const user = await apiGetCurrentUser(q);
     if (response?.success && user?.status === 'success') {
-      setPosts(response?.response);
+      setPosts(response?.data);
       setUser(user?.data)
     }
   }
+
 
   useEffect(() => {
     const queries = params.id
@@ -83,7 +84,7 @@ const Profile = () => {
 
           <div class="mt-2 flex items-center gap-4">
             <div class="flex items-center gap-1">
-              <span className="font-bold">{posts.length}</span>
+              <span className="font-bold">{posts?.length || 0}</span>
               <span>bài viết</span>
             </div>
 
@@ -109,7 +110,7 @@ const Profile = () => {
             <Dialog>
               <DialogTrigger asChild>
                 <div class="flex items-center gap-2 cursor-pointer">
-                  <span>Đang theo dõi</span> <strong>{countFollowing}</strong>
+                  <span>Đang theo dõi</span> <strong>{countFollowing || 0}</strong>
                   <span> người dùng</span>
                 </div>
               </DialogTrigger>
@@ -135,7 +136,7 @@ const Profile = () => {
         </div>
       </div>
       <div class="grid grid-cols-3 gap-1 mt-4">
-        {posts.length > 0 && posts.map((el) => (
+        {posts?.length > 0 && posts.map((el) => (
           <Dialog key={el._id}>
             <DialogTrigger asChild>
               <img

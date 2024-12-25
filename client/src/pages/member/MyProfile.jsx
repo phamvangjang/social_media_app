@@ -57,7 +57,8 @@ const MyProfile = () => {
         apiGetPostsByuid(currentUser?._id, currentUser?.token) // Hàm giả lập gọi API
           .then(response => {
             if (response.success) {
-              setPosts(response?.response)
+              console.log(response);
+              setPosts(response?.data)
             }
           })
           .catch(error => console.error("Error fetching user:", error));
@@ -65,6 +66,7 @@ const MyProfile = () => {
     },
     [currentUser?._id]
   );
+  console.log(posts);
   return (
     <div class="max-w-4xl mx-auto p-4">
       <div class="flex items-center space-x-4">
@@ -93,7 +95,7 @@ const MyProfile = () => {
 
           <div class="mt-2 flex items-center gap-4">
             <div class="flex items-center gap-1">
-              <span className="font-bold">{posts.length}</span>
+              <span className="font-bold">{posts?.length || 0}</span>
               <span>bài viết</span>
             </div>
 
@@ -146,7 +148,7 @@ const MyProfile = () => {
       </div>
 
       <div class="grid grid-cols-3 gap-1 mt-4 ">
-        {posts.length > 0 && posts.map((el) => (
+        {posts?.length > 0 && posts.map((el) => (
           <Dialog key={el._id}>
             <DialogTrigger asChild>
               <img

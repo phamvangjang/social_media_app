@@ -15,7 +15,7 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { DetailPost, Likes } from '../../components';
+import { DetailPost, Likes, Share } from '../../components';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaHeart } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
@@ -148,7 +148,15 @@ const Post = () => {
                                     <DetailPost data={{ id: el?.id, pid: el?._id, shortCode: el?.shortCode }} />
                                 </DialogContent>
                             </Dialog>
-                            <i className="far fa-paper-plane cursor-pointer"></i>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                <i className="far fa-paper-plane cursor-pointer"></i>
+                                </DialogTrigger>
+                                <DialogContent className="w-[40%] h-[50%]">
+                                    <Share data={{ id: el?.id, pid: el?._id, shortCode: el?.shortCode }} />
+                                </DialogContent>
+                            </Dialog>
+                            
                         </div>
 
                         {/* Show model list user likes post */}

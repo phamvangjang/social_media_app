@@ -103,10 +103,10 @@ const resizeImage = (file, maxWidth, maxHeight) => {
                 return
             }
             // const resizedImage = await resizeImage(file, 1080, 1080); // Resize ảnh về kích thước 1080x1080
-            // const base64 = await getBase64(resizedImage)
+            const base64 = await getBase64(file)
              // Resize ảnh và nhận Base64
-        const resizedBase64 = await resizeImage(file, 1080, 1080);
-            imagesPreview.push({ name: file.name, path: resizedBase64 })
+        // const resizedBase64 = await resizeImage(file, 1080, 1080);
+            imagesPreview.push({ name: file.name, path: base64 })
         }
         setPreview(prev => ({ ...prev, images: imagesPreview }))
     }
