@@ -8,6 +8,7 @@ import { formatComment } from '@/utils/helpers';
 import { CiHeart } from 'react-icons/ci';
 import { FaHeart } from 'react-icons/fa';
 import { likePost } from '@/store/user/userSlice';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 
 const DetailPost = ({ data }) => {
     const [statusFollow, setStatusFollow] = useState(false);
@@ -16,7 +17,7 @@ const DetailPost = ({ data }) => {
     const [posts, setPosts] = useState([]);
     const [newComment, setNewComment] = useState('');
     const navigate = useNavigate();
-    const [post, setPost] = useState('');
+    const [post, setPost] = useState([]);
     const dispatch = useDispatch();
     const pid = data?.pid;
 
@@ -27,7 +28,7 @@ const DetailPost = ({ data }) => {
             const response = await apis.apiGetPost(pid);
             console.log(response);
             // if (response?.success) 
-                setPost(response);
+                setPost(response.post);
             console.log(response.post);
             console.log(post);
 
@@ -91,7 +92,7 @@ const DetailPost = ({ data }) => {
                 pid, // ID của bài viết
                 text: newComment, // Nội dung comment
                 ownerUsername: current.username, // Tên người dùng hiện tại
-                ownerProfilePicUrl: "https://example.com/profile.jpg", // Avatar của người dùng hiện tại
+                ownerProfilePicUrl: current?.avatar, // Avatar của người dùng hiện tại
                 ownerId: current._id, // ID của người dùng hiện tại
             });
     
@@ -159,16 +160,38 @@ const DetailPost = ({ data }) => {
         };
 
     return (
-        <div className="w-full flex">
+        <div className="w-full grid grid-cols-3">
             {/* Image Section */}
-            <div className="flex-1">
+            {/* <div className="flex-1">
                 <img
                     crossOrigin="anonymous"
                     className="object-cover h-[600px] w-full flex mx-auto"
-                    src={post?.displayUrl}
+                    src={post?.images}
                     alt="Post"
                 />
-            </div>
+            </div> */}
+             <div className='col-span-2'>
+             {post?.type !== "Sidecar" ? (
+                                        <img
+                                            crossOrigin="anonymous"
+                                            src={post?.images}
+                                            alt={"post"}
+                                            className="w-[600px] mb-4 object-contain h-auto min-h-[400px]"
+                                        />
+                                    ) : (
+                                        <Carousel>
+                                            <CarouselContent>
+                                                {post?.images.map((image, index) => (
+                                                    <CarouselItem key={index} className='w-full'>
+                                                        <img crossOrigin="anonymous" src={image} alt="" className="w-full object-cover h-[700px]" />
+                                                    </CarouselItem>
+                                                ))}
+                                            </CarouselContent>
+                                            <CarouselPrevious />
+                                            <CarouselNext />
+                                        </Carousel>
+                                    )}
+             </div>
 
             {/* Content Section */}
             <div className="flex-1 flex-col justify-between p-2 h-full relative">
@@ -178,7 +201,8 @@ const DetailPost = ({ data }) => {
                         <div className="flex items-center">
                             <img
                                 crossOrigin="anonymous"
-                                src="https://instagram.fsgn4-1.fna.fbcdn.net/v/t51.2885-19/118982623_353024589077161_7490638455124782637_n.jpg?stp=dst-jpg_tt6&_nc_ht=instagram.fsgn4-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=ejpoFY0pDsAQ7kNvgHoajPq&_nc_gid=60ae2c75195147dfabaf16d95bc0bc66&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AYCKcYOfOVyE-GkUBkEYfjJCBtpALC4lKNKMmr0s3YY51A&oe=6749CAE8&_nc_sid=7a9f4b"
+                                // src="https://instagram.fsgn4-1.fna.fbcdn.net/v/t51.2885-19/118982623_353024589077161_7490638455124782637_n.jpg?stp=dst-jpg_tt6&_nc_ht=instagram.fsgn4-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=ejpoFY0pDsAQ7kNvgHoajPq&_nc_gid=60ae2c75195147dfabaf16d95bc0bc66&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AYCKcYOfOVyE-GkUBkEYfjJCBtpALC4lKNKMmr0s3YY51A&oe=6749CAE8&_nc_sid=7a9f4b"
+                                src={post?.ownerAvatar}
                                 alt="Profile"
                                 className="w-10 h-10 rounded-full mr-3"
                             />

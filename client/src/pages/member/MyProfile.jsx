@@ -24,10 +24,11 @@ const MyProfile = () => {
   const [countFollowing, setcountFollowing] = useState(null);
   const [arrayFollower, setArrayFollower] = useState([]);
   const [arrayFollowing, setArrayFollowing] = useState([]);
+  const [post, setPost] = useState([])
   useEffect(
     () => {
       if (id) {
-        apiGetFollower(id, currentUser?.token) // Hàm giả lập gọi API
+        apiGetFollower(currentUser?._id, currentUser?.token) // Hàm giả lập gọi API
           .then(response => {
             if (response.status === 'success') {
               setcountFollower(response.count); // Cập nhật countFollower
@@ -37,13 +38,13 @@ const MyProfile = () => {
           .catch(error => console.error("Error fetching user:", error));
       }
     },
-    [id]
+    [currentUser?._id]
   );
 
   useEffect(
     () => {
       if (id) {
-        apiGetFollowing(id, currentUser?.token) // Hàm giả lập gọi API
+        apiGetFollowing(currentUser?._id, currentUser?.token) // Hàm giả lập gọi API
           .then(response => {
             if (response.status === 'success') {
               setcountFollowing(response.count); // Cập nhật countFollower
@@ -53,13 +54,27 @@ const MyProfile = () => {
           .catch(error => console.error("Error fetching user:", error));
       }
     },
-    [id]
+    [currentUser?._id]
   );
   // setUid(currentUser._id);
-  // useEffect(() => {
-  //   const response = apiGetPostsByuid(uid)
-  //   console.log(response)
-  // }, [currentUser._id, uid]);
+  console.log(currentUser?._id)
+ 
+  useEffect(
+    () => {
+      if (currentUser?._id) {
+        apiGetPostsByuid(currentUser?._id, currentUser?.token) // Hàm giả lập gọi API
+          .then(response => {
+            if (response.success) {
+              setPost(response.data)
+              console.log(response);
+              console.log(post);
+            }
+          })
+          .catch(error => console.error("Error fetching user:", error));
+      }
+    },
+    [currentUser?._id]
+  );
   return (
     <div class="max-w-4xl mx-auto p-4">
       <div class="flex items-center space-x-4">
@@ -138,67 +153,16 @@ const MyProfile = () => {
           <button class="py-2 cursor-pointer">ĐƯỢC GẮN THẺ</button>
         </div>
       </div>
+
       <div class="grid grid-cols-3 gap-1 mt-4">
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 1"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 2"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 3"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 4"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 5"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 6"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 1"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 2"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 3"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 4"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 5"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 6"
-          class="w-full h-full object-cover"
-        />
+        {post ? post.map((el) => (
+          <img
+            key={el.id}
+            src={el.images}
+            alt="Post 1"
+            class="w-full h-full object-cover"
+          />
+        )) : null}
       </div>
     </div>
   );

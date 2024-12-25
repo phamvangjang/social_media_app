@@ -72,6 +72,7 @@ const Search = () => {
     const fetchUsers = async () => {
       try {
         const response = await apiGetAllUser(current.token);
+        console.log(response);
         setUsers(response.data); // Sử dụng setUsers đúng
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -115,7 +116,7 @@ console.log(users);
           }}>
             <div className="flex items-center">
               <img
-                src={search.img}
+                src={search.avatar}
                 alt={`${search.name} profile picture`}
                 className="w-12 h-12 rounded-full mr-3"
               />

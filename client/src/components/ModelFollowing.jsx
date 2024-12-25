@@ -126,7 +126,7 @@ const ModelFollowing = ({data}) => {
       <div className="relative mb-4">
         <input
           type="text"
-          placeholder="Tìm kiếm"
+          placeholder="c"
           className="w-full p-2 pl-10 border rounded-lg focus:outline-none"
         />
         <i className="fas fa-search absolute left-3 top-3 text-gray-400" />

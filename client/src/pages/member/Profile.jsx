@@ -1,4 +1,4 @@
-import { apiGetCurrentUser, apiGetFollower, apiGetFollowing } from "@/apis";
+import { apiGetCurrentUser, apiGetFollower, apiGetFollowing, apiGetPostsByuid } from "@/apis";
 import { Likes, ModelFollower, ModelFollowing, Share } from "@/components";
 import {
   Dialog,
@@ -22,6 +22,8 @@ const Profile = () => {
   const [arrayFollower, setArrayFollower] = useState([]);
   const [arrayFollowing, setArrayFollowing] = useState([]);
   const [user, setUser] = useState([]);
+  const [post, setPost] = useState([])
+  
   const dispatch = useDispatch();
   // Fetch current user info
   useEffect(() => {
@@ -36,41 +38,60 @@ const Profile = () => {
     }
   }, [id, dispatch]);
 
+  
+    useEffect(
+      () => {
+        if (id) {
+          apiGetPostsByuid(id, currentUser?.token) // Hàm giả lập gọi API
+            .then(response => {
+              if (response.success) {
+                setPost(response.data)
+                console.log(response);
+                console.log(post);
+              }
+            })
+            .catch(error => console.error("Error fetching user:", error));
+        }
+      },
+      [id]
+    );
   const currentUser = useSelector(state => state.user.current);
   if (!currentUser) {
     return <div>Loading...</div>;
   }
-  // useEffect(
-  //   () => {
-  //     if (id) {
-  //       apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
-  //       .then(response => {
-  //         if (response.status === 'success') {
-  //             setcountFollower(response.count); // Cập nhật countFollower
-  //             setArrayFollower(response.data);
-  //           }
-  //     })
-  //         .catch(error => console.error("Error fetching user:", error));
-  //     }
-  //   },
-  //   [id]
-  // );
+  useEffect(
+    () => {
+      if (id) {
+        apiGetFollower(id,currentUser?.token) // Hàm giả lập gọi API
+        .then(response => {
+          if (response.status === 'success') {
+              setcountFollower(response.count); // Cập nhật countFollower
+              setArrayFollower(response.data);
+            }
+      })
+          .catch(error => console.error("Error fetching user:", error));
+      }
+    },
+    [id]
+  );
 
-  // useEffect(
-  //   () => {
-  //     if (id) {
-  //       apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
-  //       .then(response => {
-  //         if (response.status === 'success') {
-  //             setcountFollowing(response.count); // Cập nhật countFollower
-  //             setArrayFollowing(response.data);
-  //           }
-  //     })
-  //         .catch(error => console.error("Error fetching user:", error));
-  //     }
-  //   },
-  //   [id]
-  // );
+  console.log()
+
+  useEffect(
+    () => {
+      if (id) {
+        apiGetFollowing(id,currentUser?.token) // Hàm giả lập gọi API
+        .then(response => {
+          if (response.status === 'success') {
+              setcountFollowing(response.count); // Cập nhật countFollower
+              setArrayFollowing(response.data);
+            }
+      })
+          .catch(error => console.error("Error fetching user:", error));
+      }
+    },
+    [id]
+  );
 
   console.log(user);
 
@@ -155,66 +176,14 @@ const Profile = () => {
         </div>
       </div>
       <div class="grid grid-cols-3 gap-1 mt-4">
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 1"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 2"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 3"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 4"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 5"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 6"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 1"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 2"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 3"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 4"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 5"
-          class="w-full h-full object-cover"
-        />
-        <img
-          src="https://placehold.co/300x300"
-          alt="Post 6"
-          class="w-full h-full object-cover"
-        />
+        {post ? post.map((el) => (
+          <img
+            key={el.id}
+            src={el.images[0] || el.displayUrl}
+            alt={`Post ${el.id}`}
+            class="w-full h-full object-cover"
+          />
+        )) : null}
       </div>
     </div>
   );

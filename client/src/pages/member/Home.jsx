@@ -148,7 +148,7 @@ const Home = () => {
           {users ? users.map((el) => (
             <div key={el._id} className="flex items-center">
               <img
-                src="https://placehold.co/32x32"
+                src={el.avatar}
                 alt="Suggestion"
                 className="w-8 h-8 rounded-full mr-2"
               />

@@ -24,7 +24,7 @@ const Sidebar = () => {
                     <div className="space-y-1">
                         <NavLink
                             replace={false}
-                            to={`/${current?._id}`}
+                            to={`/#loader/${current?._id}`}
                             className={prev ? active : noActive}
                             onClick={() => setActiveId((prev) => setPrev(!prev))}
                         >

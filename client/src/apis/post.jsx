@@ -31,13 +31,15 @@ export const apiCommentPost = data =>
     data
   });
 
-export const apiCreatePost = (data) => axios({
-  url: '/post/create',
-  method: 'post',
-  data
-})
+export const apiCreatePost = data =>
+  axios({
+    url: "/post/create",
+    method: "post",
+    data
+  });
 
-export const apiGetPostsByuid = (uid) => axios({
-  url: `/post/getPostsByuid/${uid}`,
-  method: 'get',
-})
+export const apiGetPostsByuid = id =>
+  axios({
+    url: `/post/getPostsByuid/${id}`,
+    method: "get"
+  });

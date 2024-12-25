@@ -110,10 +110,12 @@ const Post = () => {
                             <span className="font-bold">{el.ownerUsername}</span>
                             <span className="text-gray-500 ml-2">{moment(el.timestamp).fromNow()}</span>
                         </div>
-                        {el.type !== "Sidecar" ? (
+                        {/* <Dialog>
+                            <DialogTrigger asChild> */}
+                            {el.type !== "Sidecar" ? (
                             <img
                                 crossOrigin="anonymous"
-                                src={el.displayUrl}
+                                src={el.images}
                                 alt={el.alt}
                                 className="w-full mb-4 object-contain"
                             />
@@ -130,6 +132,13 @@ const Post = () => {
                                 <CarouselNext />
                             </Carousel>
                         )}
+{/* 
+                            </DialogTrigger>
+                            <DialogContent className="w-full h-[90%]">
+                                <DetailPost data={{ id: el?.id, pid: el?._id, shortCode: el?.shortCode }} />
+                            </DialogContent>
+                        </Dialog> */}
+                       
                         <div className="flex items-center space-x-4 mb-2">
                             <span
                                 className="cursor-pointer"
@@ -181,7 +190,7 @@ const Post = () => {
                                 <div className="text-sm text-gray-500 cursor-pointer">{`Xem tất cả ${formatComment(el?.commentsCount)} bình luận`}</div>
                             </DialogTrigger>
                             <DialogContent className="w-full h-[90%]">
-                                <DetailPost data={{ id: el?.id, pid: el?._id, shortCode: el?.shortCode }} />
+                                <DetailPost data={{ id: el?._id, pid: el?._id, shortCode: el?.shortCode }} />
                             </DialogContent>
                         </Dialog>
                     </div>

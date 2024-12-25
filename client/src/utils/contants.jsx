@@ -11,8 +11,7 @@ import { CiSearch } from "react-icons/ci";
 import { FaRegHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 const user_id = window.location.hash.split("/")[1];
-// console.log(user_id);
-
+console.log(user_id);
 
 // const path2 = {
 //   HOME: `#loaded/${current?._id}` // Đường dẫn sẽ có dạng #loaded/{user_id}
