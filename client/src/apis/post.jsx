@@ -24,6 +24,13 @@ export const apiLikePost = data =>
     data
   });
 
+export const apiLikeComment = data =>
+  axios({
+    url: "/post/likeComment",
+    method: "put",
+    data
+  });
+
 export const apiCommentPost = data =>
   axios({
     url: "/post/commentPost",
@@ -41,5 +48,11 @@ export const apiCreatePost = data =>
 export const apiGetPostsByuid = id =>
   axios({
     url: `/post/getPostsByuid/${id}`,
+    method: "get"
+  });
+
+export const apiGetPostsByShortCode = id =>
+  axios({
+    url: `/post/getPostsByShortCode/${id}`,
     method: "get"
   });

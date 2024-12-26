@@ -49,6 +49,25 @@ const userSlice = createSlice({
         state.current.likePostId = [...state.current.likePostId, postId];
       }
     },
+    likeComment: (state, action) => {
+      // Cập nhật mảng likeComment bằng cách thêm user_id vào mảng hoặc loại bỏ nếu đã có
+      const userId = action.payload.userId; // Lấy userId từ payload
+
+      // Lấy postId từ action.payload
+      const commentId = action.payload.commentId;
+
+      // Kiểm tra xem commentId đã có trong mảng likeComment chưa
+      if (state.current.likeCommentId.includes(commentId)) {
+        // Nếu bài viết đã được like, bỏ like (loại bỏ commentId khỏi mảng)
+        state.current.likeCommentId = state.current.likeCommentId.filter(
+          id => id !== commentId
+        );
+      } else {
+        // Nếu bài viết chưa được like, thêm commentId vào mảng likeComment
+        state.current.likeCommentId = [...state.current.likeCommentId, commentId];
+      }
+    },
+
     fetchAllUser: (state, action) => {
       state.users = action.payload.data;
     },
@@ -90,6 +109,7 @@ export const {
   logout,
   clearMessage,
   likePost,
+  likeComment,
   fetchAllUser,
   fetchFriends
 } = userSlice.actions;

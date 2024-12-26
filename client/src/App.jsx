@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import path from "./utils/path";
 import {
+  DetailPost,
   DirectInbox,
   Explore,
   Home,
@@ -29,6 +30,7 @@ const App = () => {
         <Route path={path.EXPLORE} element={<Explore />} />
         <Route path={`${path.MYPROFILE}/:id`} element={<MyProfile />} />
         <Route path={`${path.PROFILE}/:id`} element={<Profile />} />
+        <Route path={`${path.DETAIL_POST}/:id`} element={<DetailPost />} />
         <Route path={path.REELS} element={<Reels />} />
       </Route>
 

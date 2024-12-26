@@ -152,7 +152,7 @@ const Post = () => {
                                     <i className="far fa-paper-plane cursor-pointer"></i>
                                 </DialogTrigger>
                                 <DialogContent className="w-[40%] h-[60%]">
-                                    <Share data={{ id: el?.id, pid: el?._id, shortCode: el?.shortCode }} />
+                                    <Share data={{ id: el?.id, pid: el?._id, shortCode: el?.shortCode, img: el.images[0] }} />
                                 </DialogContent>
                             </Dialog>
 

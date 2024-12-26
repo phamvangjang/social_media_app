@@ -1,9 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-
-const Share = data => {
+import { useSelector } from "react-redux";
+import { connectSocket, socket } from "../socket";
+function containsUrl(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return urlRegex.test(text);
+}
+function linkify(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(
+    urlRegex,
+    (url) => `<a href="${url}" target="_blank">${url}</a>`
+  );
+}
+const Share = ({ data }) => {
   const [toggle, setToggle] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { friends, current } = useSelector((state) => state.user)
+  const [arrayUser, setArrayUser] = useState([]);
   const contacts = [
     {
       id: 1,
@@ -76,14 +90,56 @@ const Share = data => {
       verified: true
     }
   ];
-  console.log(data);
+  console.log(friends);
+  console.log(data?.img)
+
   const handleToggle = (q) => {
     setToggle(true)
     console.log(q)
+    setArrayUser(q);
   }
+
+  // Socket connection
+  useEffect(() => {
+    if (current?._id) {
+      connectSocket(current._id);
+      socket.on("message", (data) => {
+        console.log(data); // Handle incoming messages here
+      });
+    }
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [current?._id]);
+
+  // Send friend request
+  console.log(data?.shortCode)
+  console.log(arrayUser)
   const share = () => {
-    console.log('first')
+    console.log("Sending friend request...");
+    console.log(arrayUser)
+    const value = `http://localhost:5173/p/${data?.shortCode}`
+    const newMessage = {
+      message: linkify(value),
+      conversation_id: arrayUser,
+      from: current?._id,
+      to: arrayUser,
+      type: containsUrl(value) ? "Link" : "Text",
+      preview: data?.img,
+      // subtype: containsUrl(value) ? "link" : null,
+    };
+    socket.emit("text_message", newMessage, (response) => {
+      console.log("Sending friend request...");
+
+      console.log("server response", response);
+      // dispatch(AddDirectMessage({ message: newMessage }));
+      dispatch(UpdateDirectConversations({ conversation: current, message: newMessage }));
+      // socket.emit("start_conversations", { to: current?.user_id, from: user_id });
+    });
   }
+
+
   return (
     <div className=" w-full h-full">
       <div className="relative mb-4">
@@ -96,9 +152,9 @@ const Share = data => {
         />
       </div>
       <div className="overflow-y-scroll h-[256px] no_scrollbar">
-        {contacts
-          .filter(contact =>
-            contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+        {friends
+          .filter(friend =>
+            friend.firstName.toLowerCase().includes(searchTerm.toLowerCase())
           )
           .map((contact, index) =>
             <div
@@ -107,14 +163,14 @@ const Share = data => {
             >
               <div className="flex items-center">
                 <img
-                  src={contact.img}
-                  alt={`${contact.name}'s profile`}
+                  src={contact.avatar}
+                  alt={`${contact.firstName} ${contact.lastName}'s profile`}
                   className="w-10 h-10 rounded-full mr-3"
                 />
                 <div>
                   <div className="flex items-center">
                     <span className="font-semibold">
-                      {contact.name}
+                      {contact.firstName} {contact.lastName}
                     </span>
                     {contact.verified &&
                       <i className="fas fa-check-circle text-blue-500 ml-1" />}
@@ -125,7 +181,7 @@ const Share = data => {
                 </div>
               </div>
               <input
-                onClick={() => handleToggle(contact.id)}
+                onClick={() => handleToggle(contact._id,)}
                 type="radio"
                 name="contact"
                 className="form-radio" />

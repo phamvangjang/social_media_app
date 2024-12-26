@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as apis from '../apis';
-import { useNavigate } from 'react-router-dom';
-import { Comments } from '.';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Comments, Likes } from '.';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { formatComment } from '@/utils/helpers';
@@ -9,6 +9,7 @@ import { CiHeart } from 'react-icons/ci';
 import { FaHeart } from 'react-icons/fa';
 import { likePost } from '@/store/user/userSlice';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 
 const DetailPost = ({ data }) => {
     const [statusFollow, setStatusFollow] = useState(false);
@@ -19,7 +20,8 @@ const DetailPost = ({ data }) => {
     const navigate = useNavigate();
     const [post, setPost] = useState([]);
     const dispatch = useDispatch();
-    const pid = data?.pid;
+    const { id: shortCodeId } = useParams(); // Destructure `id` from `useParams`
+    const [sid, setsid] = useState(shortCodeId); // Initialize state with `shortCode.id`
 
     const fetchPost = async () => {
         try {
@@ -33,11 +35,25 @@ const DetailPost = ({ data }) => {
 
 
 
+    useEffect(() => {
+        const fetchPostByShortCode = async () => {
+            try {
+                console.log(`Fetching post for shortcode: ${sid}`);
+                const response = await apis.apiGetPostsByShortCode(sid);
+                console.log(response);
+                setPost(response.data);
+            } catch (error) {
+                console.error('Error fetching post:', error);
+            }
+        };
 
+        if (sid) fetchPostByShortCode();
+    }, [sid]); // Dependency on `sid`
+    const pid = post?._id;
     // Fetch comments
     const fetchComment = async () => {
         try {
-            const response = await apis.apiGetComments(pid);
+            const response = await apis.apiGetComments(post._id);
             if (response?.success) setComments(response?.comments);
         } catch (error) {
             console.error('Error fetching comments:', error);
@@ -110,13 +126,17 @@ const DetailPost = ({ data }) => {
         if (pid) {
             fetchPost();
             fetchComment();
+            // if (!posts) {
+            // }
             // statusFollowFunc();
         }
     }, [pid]);
 
-    // useEffect(() => {
-    //     if (data?.shortCode) navigate(`/p/${data?.shortCode}`);
-    // }, [data?.shortCode]);
+    // console.log(posts)
+
+    useEffect(() => {
+        if (data?.shortCode) navigate(`/p/${data?.shortCode}`);
+    }, [data?.shortCode]);
 
     const handleToggleLikePost = async (postId) => {
         dispatch(likePost({ postId }));
@@ -154,16 +174,7 @@ const DetailPost = ({ data }) => {
     };
 
     return (
-        <div className="w-full grid grid-cols-3 h-full">
-            {/* Image Section */}
-            {/* <div className="flex-1">
-                <img
-                    crossOrigin="anonymous"
-                    className="object-cover h-[600px] w-full flex mx-auto"
-                    src={post?.images}
-                    alt="Post"
-                />
-            </div> */}
+        <div className="w-[90%] grid grid-cols-3 h-full items-center justify-center">
             <div className='col-span-2'>
                 {post?.type !== "Sidecar" ? (
                     <img
@@ -240,10 +251,28 @@ const DetailPost = ({ data }) => {
                             <i className="far fa-paper-plane cursor-pointer"></i>
                         </div>
                     </div>
-                    <div>
-                        <div className="text-gray-500 text-sm font-bold">{`${formatComment(
-                            post?.likesCount
-                        )} lượt thích`}</div>
+                    {/* <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="text-gray-500 text-sm font-bold">{`${formatComment(
+                                    post?.likesCount
+                                )} lượt thích`}</div>
+                            </DialogTrigger>
+                            <DialogContent className="w-[40%] h-[50%]">
+                                <Likes data={{ id: post?.id, pid: post?._id, arrayUserLike: post?.arrayUserLike }} />
+                            </DialogContent>
+                        </Dialog> */}
+                    <div className='flex items-start flex-col gap-2'>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="text-gray-500 text-sm font-bold cursor-pointer">{`${formatComment(
+                                    post?.likesCount
+                                )} lượt thích`}
+                                </div>
+                            </DialogTrigger>
+                            <DialogContent className='w-[40%] h-[60%]'>
+                                <Likes data={{ id: post?.id, pid: post?._id, arrayUserLike: post?.arrayUserLike }} />
+                            </DialogContent>
+                        </Dialog>
                         <div className="text-gray-500 text-sm">{moment(post?.timestamp).fromNow()}</div>
                     </div>
                     <div className="mt-4 flex justify-between w-full">

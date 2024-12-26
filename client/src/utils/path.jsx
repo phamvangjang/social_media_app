@@ -7,6 +7,7 @@ const path = {
   DIRECT_INBOX: "direct-inbox",
   MYPROFILE: "myprofile",
   PROFILE: "profile",
+  DETAIL_POST: "p",
 
   //authentication
   ACCOUNTS: "/accounts",
