@@ -57,7 +57,7 @@ const MyProfile = () => {
         apiGetPostsByuid(currentUser?._id, currentUser?.token) // Hàm giả lập gọi API
           .then(response => {
             if (response.success) {
-              console.log(response);
+              // console.log(response);
               setPosts(response?.data)
             }
           })
@@ -66,7 +66,7 @@ const MyProfile = () => {
     },
     [currentUser?._id]
   );
-  console.log(posts);
+  // console.log(posts);
   return (
     <div class="max-w-4xl mx-auto p-4">
       <div class="flex items-center space-x-4">

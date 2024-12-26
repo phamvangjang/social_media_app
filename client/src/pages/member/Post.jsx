@@ -80,7 +80,6 @@ const Post = () => {
     };
 
     const handleToggleExpand = (index) => {
-        // Toggle the current caption; collapse it if already expanded
         setExpandedIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
@@ -99,8 +98,8 @@ const Post = () => {
                         <div className="flex items-center mb-4">
                             <img
                                 crossOrigin="anonymous"
-                                src={el.ownerAvatar}
-                                alt="avatar"
+                                src={`${el.ownerAvatar}`}
+                                alt={`${el._id}`}
                                 className="w-8 h-8 rounded-full mr-2 object-contain" />
                             <span className="font-bold">{el.ownerUsername}</span>
                             <span className="text-gray-500 ml-2">{moment(el.timestamp).fromNow()}</span>
@@ -150,13 +149,13 @@ const Post = () => {
                             </Dialog>
                             <Dialog>
                                 <DialogTrigger asChild>
-                                <i className="far fa-paper-plane cursor-pointer"></i>
+                                    <i className="far fa-paper-plane cursor-pointer"></i>
                                 </DialogTrigger>
-                                <DialogContent className="w-[40%] h-[50%]">
+                                <DialogContent className="w-[40%] h-[60%]">
                                     <Share data={{ id: el?.id, pid: el?._id, shortCode: el?.shortCode }} />
                                 </DialogContent>
                             </Dialog>
-                            
+
                         </div>
 
                         {/* Show model list user likes post */}

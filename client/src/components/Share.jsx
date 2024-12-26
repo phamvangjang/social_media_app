@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "./ui/button";
 
 const Share = data => {
   const [toggle, setToggle] = useState(false);
@@ -76,6 +77,13 @@ const Share = data => {
     }
   ];
   console.log(data);
+  const handleToggle = (q) => {
+    setToggle(true)
+    console.log(q)
+  }
+  const share = () => {
+    console.log('first')
+  }
   return (
     <div className=" w-full h-full">
       <div className="relative mb-4">
@@ -87,7 +95,7 @@ const Share = data => {
           onChange={e => setSearchTerm(e.target.value)}
         />
       </div>
-      <div className="overflow-y-scroll h-[384px] no_scrollbar">
+      <div className="overflow-y-scroll h-[256px] no_scrollbar">
         {contacts
           .filter(contact =>
             contact.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -116,10 +124,19 @@ const Share = data => {
                   </span>
                 </div>
               </div>
-              <input type="radio" name="contact" className="form-radio" />
+              <input
+                onClick={() => handleToggle(contact.id)}
+                type="radio"
+                name="contact"
+                className="form-radio" />
             </div>
           )}
       </div>
+
+      {toggle && <Button
+        onClick={() => share()}
+        className='bg-blue-600 w-full text-white mt-7 hover:bg-blue-500 hover:text-white'
+        variant={'outline'}>Gửi</Button>}
     </div>
   );
 };
