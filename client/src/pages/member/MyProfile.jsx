@@ -1,5 +1,5 @@
 import { apiGetFollower, apiGetFollowing, apiGetPostsByuid } from "@/apis";
-import { DetailPost, Likes, ModelFollower, ModelFollowing, Share } from "@/components";
+import { Avatar, DetailPost, Likes, ModelFollower, ModelFollowing, Share } from "@/components";
 import {
   Dialog,
   DialogContent,
@@ -84,9 +84,19 @@ const MyProfile = () => {
               {currentUser.username}
             </h2>
             <i class="fas fa-check-circle text-blue-500" />
-            <button class="ml-4 px-4 py-1 border rounded font-medium bg-[#DBDBDB]">
-              Edit profile
-            </button>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <button class="ml-4 px-4 py-1 border rounded font-medium bg-[#DBDBDB]">
+                  Edit profile
+                </button>
+              </DialogTrigger>
+              <DialogContent >
+                <Avatar />
+              </DialogContent>
+            </Dialog>
+
+
             <button class="ml-2 px-4 py-1 border rounded font-medium bg-[#DBDBDB]">
               View archive
             </button>

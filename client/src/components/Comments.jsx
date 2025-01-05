@@ -84,7 +84,7 @@ const Comments = ({ data }) => {
                             </div>
                             <div className="flex gap-4">
                                 <div className="text-gray-500 text-sm">
-                                    {moment(comment.timestamp).fromNow()}
+                                    {moment(comment.createdAt).fromNow()}
                                 </div>
                                 <div className="text-gray-500 text-sm">
                                     <span className="mr-2 cursor-pointer">

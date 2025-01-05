@@ -12,10 +12,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 
 const DetailPost = ({ data }) => {
-    const [statusFollow, setStatusFollow] = useState(false);
     const { current } = useSelector((state) => state.user);
     const [comments, setComments] = useState([]);
-    const [posts, setPosts] = useState([]);
     const [newComment, setNewComment] = useState('');
     const navigate = useNavigate();
     const [post, setPost] = useState([]);
@@ -32,9 +30,6 @@ const DetailPost = ({ data }) => {
             console.error('Error fetching post:', error);
         }
     };
-
-
-
     useEffect(() => {
         const fetchPostByShortCode = async () => {
             try {
@@ -59,33 +54,6 @@ const DetailPost = ({ data }) => {
             console.error('Error fetching comments:', error);
         }
     };
-
-    // Check follow status
-    // const statusFollowFunc = async () => {
-    //     const statusData = { id: current?._id, fid: post?.ownerId };
-    //     try {
-    //         const { id, fid } = statusData;
-    //         console.log(statusData);
-    //         const response = await apis.apiStatusFollow(id, fid);
-    //         if (response.success) setStatusFollow(response.success);
-    //     } catch (error) {
-    //         console.error('Error checking follow status:', error);
-    //     }
-    // };
-
-    // // Toggle follow/unfollow
-    // const toggleFollow = async (pid) => {
-    //     const uid = current?._id;
-    //     const payload = { uid, pid };
-    //     try {
-    //         const response = await apis.apiFollow(payload);
-    //         if (response?.mes === 'Unfollowed successfully') setStatusFollow(false);
-    //         else if (response?.mes === 'Followed successfully') setStatusFollow(true);
-    //     } catch (error) {
-    //         console.error('Error toggling follow:', error);
-    //     }
-    // };
-
     // Add comment
     const handleAddComment = async () => {
         // console.log(newComment);
@@ -174,7 +142,7 @@ const DetailPost = ({ data }) => {
     };
 
     return (
-        <div className="w-[90%] grid grid-cols-3 h-full items-center justify-center">
+        <div className="w-[90%] grid grid-cols-3 h-screen items-center justify-center">
             <div className='col-span-2'>
                 {post?.type !== "Sidecar" ? (
                     <img
@@ -203,14 +171,13 @@ const DetailPost = ({ data }) => {
             </div>
 
             {/* Content Section */}
-            <div className="flex-1 flex-col justify-between p-2 h-full relative">
+            <div className="flex-1 flex-col justify-between p-2 h-[80%] relative">
                 <div className="flex flex-col">
                     {/* Header */}
                     <div className="flex flex-col">
                         <div className="flex items-center">
                             <img
                                 crossOrigin="anonymous"
-                                // src="https://instagram.fsgn4-1.fna.fbcdn.net/v/t51.2885-19/118982623_353024589077161_7490638455124782637_n.jpg?stp=dst-jpg_tt6&_nc_ht=instagram.fsgn4-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=ejpoFY0pDsAQ7kNvgHoajPq&_nc_gid=60ae2c75195147dfabaf16d95bc0bc66&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AYCKcYOfOVyE-GkUBkEYfjJCBtpALC4lKNKMmr0s3YY51A&oe=6749CAE8&_nc_sid=7a9f4b"
                                 src={post?.ownerAvatar}
                                 alt="Profile"
                                 className="w-10 h-10 rounded-full mr-3"
@@ -251,16 +218,6 @@ const DetailPost = ({ data }) => {
                             <i className="far fa-paper-plane cursor-pointer"></i>
                         </div>
                     </div>
-                    {/* <Dialog>
-                            <DialogTrigger asChild>
-                                <div className="text-gray-500 text-sm font-bold">{`${formatComment(
-                                    post?.likesCount
-                                )} lượt thích`}</div>
-                            </DialogTrigger>
-                            <DialogContent className="w-[40%] h-[50%]">
-                                <Likes data={{ id: post?.id, pid: post?._id, arrayUserLike: post?.arrayUserLike }} />
-                            </DialogContent>
-                        </Dialog> */}
                     <div className='flex items-start flex-col gap-2'>
                         <Dialog>
                             <DialogTrigger asChild>
@@ -273,7 +230,7 @@ const DetailPost = ({ data }) => {
                                 <Likes data={{ id: post?.id, pid: post?._id, arrayUserLike: post?.arrayUserLike }} />
                             </DialogContent>
                         </Dialog>
-                        <div className="text-gray-500 text-sm">{moment(post?.timestamp).fromNow()}</div>
+                        <div className="text-gray-500 text-sm">{moment(post?.createdAt).fromNow()}</div>
                     </div>
                     <div className="mt-4 flex justify-between w-full">
                         <input
@@ -281,10 +238,10 @@ const DetailPost = ({ data }) => {
                             placeholder="Thêm bình luận..."
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                            className="w-full border-none focus:outline-none"
+                            className="w-full border-none focus:outline-none p-2"
                         />
                         <button
-                            className="text-blue-500"
+                            className="text-gray-50 p-2 bg-blue-500 rounded-r-md"
                             onClick={handleAddComment}
                         >
                             Đăng

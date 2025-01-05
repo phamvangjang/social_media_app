@@ -102,7 +102,7 @@ const Post = () => {
                                 alt={`${el._id}`}
                                 className="w-8 h-8 rounded-full mr-2 object-contain" />
                             <span className="font-bold">{el.ownerUsername}</span>
-                            <span className="text-gray-500 ml-2">{moment(el.timestamp).fromNow()}</span>
+                            <span className="text-gray-500 ml-2">{moment(el.createdAt).fromNow()}</span>
                         </div>
                         {el.type !== "Sidecar" ? (
                             <img
