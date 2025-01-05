@@ -67,3 +67,9 @@ export const apiStatusFollow = (id, username) =>
     method: "get",
     params: { id, username }
   });
+
+export const apiUpdateCurrent = (data, _id) => axios({
+  url: `/user/current/${_id}`,
+  method: 'put',
+  data
+})

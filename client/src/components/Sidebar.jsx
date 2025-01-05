@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { menubars } from '../utils/contants'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import { CreatePost, Notification, Search } from '.';
+import { Avatar, CreatePost, Notification, Search } from '.';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogHeader } from '@/components/ui/dialog';
 import { NavLink } from 'react-router-dom';
 import path from '@/utils/path';
@@ -98,10 +98,18 @@ const Sidebar = () => {
                         </Sheet>
                     </div>
                 </div>
-                <div className={noActive}>
-                    <span className='text-2xl'><i className="fas fa-bars"></i></span>
-                    <span>Xem thêm</span>
-                </div>
+
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className={noActive}>
+                            <span className='text-2xl'><i className="fas fa-bars"></i></span>
+                            <span>Xem thêm</span>
+                        </div>
+                    </DialogTrigger>
+                    <DialogContent >
+                        <Avatar />
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     )

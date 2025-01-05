@@ -10,3 +10,4 @@ export { default as ModelFollower } from "./ModelFollower";
 export { default as ModelFollowing } from "./ModelFollowing";
 export { default as Model } from "./Model";
 export { default as UserLike } from "./UserLike";
+export { default as Avatar } from "./Avatar";
