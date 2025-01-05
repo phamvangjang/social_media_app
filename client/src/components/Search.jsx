@@ -84,9 +84,9 @@ const Search = () => {
   // console.log(users);
   const filteredSearches = users.filter(
     search =>
-      search.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      search.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      search.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+      search.usernam?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      search.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      search.lastName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const handleToProfile = (userId) => {
     navigate(`/profile/${userId}`)

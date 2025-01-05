@@ -9,7 +9,9 @@ const initialState = {
   isLoading: false,
   mes: "",
   users: [],
-  friends: []
+  friends: [],
+  notification: 0,
+
 };
 
 const userSlice = createSlice({
@@ -73,6 +75,12 @@ const userSlice = createSlice({
     },
     fetchFriends: (state, action) => {
       state.friends = action.payload.data;
+    },
+    fetchNoti: (state, action) => {
+      state.notification = action.payload;
+    },
+    delteNoti: (state, action) => {
+      state.notification = 0;
     }
   },
 
@@ -111,6 +119,8 @@ export const {
   likePost,
   likeComment,
   fetchAllUser,
-  fetchFriends
+  fetchFriends,
+  fetchNoti,
+  delteNoti
 } = userSlice.actions;
 export default userSlice.reducer;

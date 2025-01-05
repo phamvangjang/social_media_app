@@ -1,9 +1,11 @@
 import { apiUpdateCurrent } from '@/apis';
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux'
+import Model from './Model';
 
 const Avatar = () => {
+    const [loading, setLoading] = useState(false);
     const { register, formState: { errors, isDirty }, handleSubmit, reset } = useForm()
     const current = useSelector((state) => state.user.current);
     const handleUpdateInfor = async (data) => {
@@ -12,8 +14,12 @@ const Avatar = () => {
         if (data.avatar.length > 0) formData.append('avatar', data.avatar[0])
         delete data.avatar
         for (let i of Object.entries(data)) formData.append(i[0], i[1])
-        const response = await apiUpdateCurrent(formData, current?._id)
-        console.log(response)
+        setLoading(true)
+        const response = await apiUpdateCurrent(formData, current?._id);
+        setLoading(false)
+        if (response?.success) {
+            window.location.reload;
+        }
     }
     return (
         <div>
@@ -41,6 +47,7 @@ const Avatar = () => {
                         className='p-2 bg-blue-500 cursor-pointer text-white rounded-md'>Đổi ảnh</button>
                 </div>
             </form>
+            {loading && <Model />}
         </div>
     )
 }
